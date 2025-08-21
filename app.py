@@ -38,6 +38,34 @@ db = DatabaseManager()
 configuration = Configuration(access_token=os.getenv('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
+# 🆕 加入這個函數和執行
+def auto_add_employees():
+    """啟動時自動新增測試員工"""
+    try:
+        conn = db.get_connection()
+        cursor = conn.cursor()
+        
+        # 檢查員工是否已存在
+        cursor.execute('SELECT id FROM employees WHERE employee_id = ?', ('IGA1-01657',))
+        if not cursor.fetchone():
+            # 新增員工
+            cursor.execute('''
+                INSERT INTO employees (employee_id, name, department_id, shift_type, preferred_language)
+                VALUES (?, ?, ?, ?, ?)
+            ''', ('IGA1-01657', '測試員工01657', 1, 'day', 'zh'))
+            
+            conn.commit()
+            print("✅ 自動新增員工 IGA1-01657")
+        else:
+            print("👤 員工 IGA1-01657 已存在")
+            
+        conn.close()
+    except Exception as e:
+        print(f"員工新增錯誤: {e}")
+
+# 啟動時執行
+auto_add_employees()
+
 # 多語言支援
 MESSAGES = {
     'zh': {
