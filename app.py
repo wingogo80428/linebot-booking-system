@@ -176,7 +176,7 @@ def check_time_limit(shift_type: str, booking_type: str) -> bool:
         else:
             limit = time(21, 0)   # 21:00
     
-
+    return True
 def generate_meal_verification_code(employee_data: dict, meal_data: dict) -> str:
     """生成領餐驗證碼"""
     today = date.today()
